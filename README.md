@@ -65,3 +65,7 @@ DraftPulse 是一款 Chrome 扩展，复用浏览器中已登录的 Gemini、Cha
 # 单元测试
 node tests/run_tests.js
 ```
+
+## 许可证
+
+本项目采用 [Apache License 2.0](LICENSE) 开源许可证。
