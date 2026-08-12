@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DraftPulse</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="header-brand">
+        <span class="header-icon">📈</span>
+        <strong>DraftPulse</strong>
+      </div>
+      <span id="versionLabel" class="version-label">多模型网页会话版</span>
+    </div>
+    <p class="header-sub">复用 Gemini / ChatGPT / DeepSeek 网页会话，为 X 推文准备回复草稿
+      <span class="help-icon" title="使用方法：1. 在 X 打开推文并点击回复打开回复框；2. 在工具栏选择模型并点击生成；3. Gemini 自动回填草稿，ChatGPT/DeepSeek 需手动发送复制。扩展不会自动发布。">?</span>
+    </p>
+  </header>
+
+  <button id="toggleExtensionBtn" class="pause">暂时关闭插件</button>
+  <p id="toggleExtensionHint" class="tip toggle-hint">关闭后会停止扫描并移除 X 页面工具栏；再次点击即可恢复。</p>
+
+  <!-- Tab navigation -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="ai">AI</button>
+    <button class="tab-btn" data-tab="reply">Reply</button>
+    <button class="tab-btn" data-tab="context">Context</button>
+    <button class="tab-btn" data-tab="pulse">Pulse</button>
+    <button class="tab-btn" data-tab="safety">Safety</button>
+    <button class="tab-btn" data-tab="advanced">Advanced</button>
+  </nav>
+
+  <!-- AI tab -->
+  <div class="tab-content active" id="tab-ai">
+    <label for="provider">网页模型</label>
+    <select id="provider" title="选择要使用的 AI 模型。Gemini 可自动生成并回填，ChatGPT 和 DeepSeek 需手动发送和复制。">
+      <option value="gemini">Gemini · 自动生成并回填</option>
+      <option value="chatgpt">ChatGPT · 图文准备（手动发送）</option>
+      <option value="deepseek">DeepSeek · 文字准备（手动发送）</option>
+    </select>
+
+    <section class="card status-card" aria-live="polite">
+      <div class="row"><span>运行模式</span><b id="modeLabel">检测中…</b></div>
+      <div class="row"><span>专用标签页</span><b id="providerTabStatus" class="warn">检测中…</b></div>
+      <div class="row"><span>X 页面增强</span><b id="xPageStatus" class="warn">检测中…</b></div>
+      <p id="statusDetail" class="card-detail">正在检查网页状态。</p>
+      <p id="xPageDetail" class="card-detail">正在检查当前 X 页面。</p>
+    </section>
+
+    <p id="providerTip" class="tip provider-tip"></p>
+  </div>
+
+  <!-- Reply tab -->
+  <div class="tab-content" id="tab-reply">
+    <label for="persona">回复风格</label>
+    <select id="persona" title="选择回复的语气和角度。自定义风格可输入详细描述。">
+      <option value="professional">专业洞察</option>
+      <option value="agreeable">友善赞同</option>
+      <option value="humorous">风趣幽默</option>
+      <option value="questioning">启发提问</option>
+      <option value="counter">反方讨论</option>
+      <option value="pithy">简短锐评</option>
+      <option value="tech_creator">Tech Creator</option>
+      <option value="developer">Developer</option>
+      <option value="researcher">Researcher</option>
+      <option value="casual">Casual</option>
+      <option value="custom">自定义风格</option>
+    </select>
+    <p id="personaDescription" class="tip persona-desc"></p>
+
+    <div id="customPersonaWrap" class="conditional" hidden>
+      <label for="customPersona">自定义风格说明</label>
+      <textarea id="customPersona" maxlength="600" rows="3" placeholder="例如：像有经验的开发者，简洁、略带幽默，不吹捧，优先指出一个实际问题。"></textarea>
+    </div>
+
+    <label for="replyLanguage">回复语言</label>
+    <select id="replyLanguage" title="选择回复使用的语言。跟随原推文会自动检测推文语言。">
+      <option value="auto">跟随原推文</option>
+      <option value="zh-CN">简体中文</option>
+      <option value="zh-TW">繁体中文</option>
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+      <option value="custom">自定义语言</option>
+    </select>
+
+    <div id="customLanguageWrap" class="conditional" hidden>
+      <label for="customLanguage">自定义语言</label>
+      <input id="customLanguage" type="text" maxlength="80" placeholder="例如：西班牙语、法语、粤语口吻">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="maxReplyLength">最大回复长度（字符）</label>
+        <input id="maxReplyLength" type="number" min="20" max="500" step="10" value="200">
+      </div>
+      <div class="field">
+        <label for="replyCount">回复数量</label>
+        <select id="replyCount" title="1 条直接填入，3 条候选可在工具栏切换。">
+          <option value="1">1 条</option>
+          <option value="3">3 条候选</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="check-row">
+      <label><input type="checkbox" id="useEmoji" checked> 允许使用 Emoji</label>
+      <label><input type="checkbox" id="askQuestion"> 结尾提出问题</label>
+      <label><input type="checkbox" id="allowDisagreement" checked> 允许不同意见</label>
+    </div>
+
+    <label for="customRequirements">自定义补充要求</label>
+    <textarea id="customRequirements" maxlength="600" rows="2" placeholder="例如：不要用感叹号，提到一个具体数字或案例。"></textarea>
+
+    <label for="draftPanelMode">回复模式</label>
+    <select id="draftPanelMode" title="选择回复方式：自动填入回复框或显示草稿面板。">
+      <option value="auto_fill">自动填入回复框</option>
+      <option value="panel">显示草稿面板</option>
+    </select>
+
+    <!-- My Voice section -->
+    <div class="my-voice-section">
+      <div class="check-row">
+        <label><input type="checkbox" id="myVoiceEnabled"> 启用 My Voice 写作风格</label>
+      </div>
+      <div id="myVoiceFields" hidden>
+        <label for="myVoiceDescription">风格描述</label>
+        <textarea id="myVoiceDescription" maxlength="600" rows="2" placeholder="描述你的写作风格，例如：简洁、专业、偶尔用比喻"></textarea>
+
+        <label for="myVoiceSamples">写作样本（每行一个）</label>
+        <textarea id="myVoiceSamples" maxlength="3000" rows="4" placeholder="粘贴几段你过去写过的文字作为风格参考&#10;每行一个样本"></textarea>
+
+        <label for="myVoiceForbidden">避免使用的短语（每行一个）</label>
+        <textarea id="myVoiceForbidden" maxlength="2000" rows="2" placeholder="例如：亲、宝子、家人们"></textarea>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="saveBtn">保存设置</button>
+      <button id="resetSettingsBtn" class="secondary" title="将所有回复设置恢复为默认值">恢复默认设置</button>
+    </div>
+  </div>
+
+  <!-- Context tab -->
+  <div class="tab-content" id="tab-context">
+    <label for="threadContextMode">上下文模式</label>
+    <select id="threadContextMode" title="选择分析推文时的上下文范围。">
+      <option value="single">Single · 仅当前推文</option>
+      <option value="smart">Smart · 自动加入必要上下文</option>
+      <option value="thread">Thread · 完整线程</option>
+    </select>
+  </div>
+
+  <!-- Pulse tab -->
+  <div class="tab-content" id="tab-pulse">
+    <div class="pulse-settings">
+      <div class="check-row">
+        <label><input type="checkbox" id="pulseEnabled"> 在工具栏显示 Pulse Score</label>
+      </div>
+      <p class="tip pulse-desc">Pulse Score 综合浏览增速、互动率和新鲜度，为每条推文计算热度评分。</p>
+
+      <div id="pulseWeightFields">
+        <label class="pulse-slider-label">权重分配</label>
+
+        <div class="pulse-slider-row">
+          <span class="pulse-slider-name">速度</span>
+          <input type="range" id="pulseWeightVelocity" min="0" max="100" step="1" class="pulse-slider">
+          <span class="pulse-slider-value" id="pulseWeightVelocityVal">50</span>
+        </div>
+
+        <div class="pulse-slider-row">
+          <span class="pulse-slider-name">互动率</span>
+          <input type="range" id="pulseWeightEngagement" min="0" max="100" step="1" class="pulse-slider">
+          <span class="pulse-slider-value" id="pulseWeightEngagementVal">30</span>
+        </div>
+
+        <div class="pulse-slider-row">
+          <span class="pulse-slider-name">新鲜度</span>
+          <input type="range" id="pulseWeightFreshness" min="0" max="100" step="1" class="pulse-slider">
+          <span class="pulse-slider-value" id="pulseWeightFreshnessVal">20</span>
+        </div>
+
+        <p class="tip pulse-weight-hint">滑块值表示各维度在总分中的相对权重占比。</p>
+      </div>
+
+      <button id="resetPulseBtn" class="secondary" title="恢复 Pulse Score 权重为默认值">恢复默认</button>
+    </div>
+  </div>
+
+  <!-- Safety tab -->
+  <div class="tab-content" id="tab-safety">
+    <label for="generationCooldownSeconds">生成冷却时间（秒）</label>
+    <select id="generationCooldownSeconds">
+      <option value="15">15 秒</option>
+      <option value="30">30 秒</option>
+      <option value="60">60 秒</option>
+      <option value="120">120 秒</option>
+    </select>
+  </div>
+
+  <!-- Advanced tab -->
+  <div class="tab-content" id="tab-advanced">
+    <div class="button-group">
+      <button id="repairXBtn" class="secondary">重新注入 X 页面脚本</button>
+      <button id="rescanXBtn" class="secondary">重新扫描推文</button>
+    </div>
+    <div class="button-group">
+      <button id="openProviderBtn" class="secondary">打开专用网页标签页</button>
+      <button id="clearSnapshotsBtn" class="secondary">清除热度快照</button>
+    </div>
+
+    <!-- Health Check -->
+    <section class="card health-card">
+      <div class="health-header">
+        <span>健康检查</span>
+        <span id="healthBadge" class="health-badge healthy">100</span>
+      </div>
+      <div id="healthChecklist" class="health-checklist">
+        <div class="health-item" id="healthXDom"><span class="health-check">✓</span> X DOM</div>
+        <div class="health-item" id="healthProvider"><span class="health-check">✓</span> AI 会话</div>
+        <div class="health-item" id="healthExtraction"><span class="health-check">✓</span> 推文提取</div>
+        <div class="health-item" id="healthImageExtraction"><span class="health-check">✓</span> 图片提取</div>
+        <div class="health-item" id="healthAccount"><span class="health-check">✓</span> 账号检测</div>
+        <div class="health-item" id="healthReplyComposer"><span class="health-check">✓</span> 回复编辑器</div>
+      </div>
+      <div id="healthStorage" class="health-detail"></div>
+      <button id="runHealthCheckBtn" class="secondary">运行健康检查</button>
+    </section>
+
+    <section class="card diag-card" aria-live="polite">
+      <div class="row"><span>扩展版本</span><b id="diagVersion">-</b></div>
+      <div class="row"><span>X 页面注入</span><b id="diagInjected" class="warn">检测中…</b></div>
+      <div class="row"><span>推文 / 工具栏</span><b id="diagCounts">-</b></div>
+      <div class="row"><span>当前提供商</span><b id="diagProvider">-</b></div>
+      <div class="row"><span>专用 AI 标签页</span><b id="diagProviderTab" class="warn">检测中…</b></div>
+      <div class="row"><span>登录状态</span><b id="diagLogin" class="warn">检测中…</b></div>
+      <div class="row"><span>最近一次请求</span><b id="diagLastRequest">-</b></div>
+      <p id="diagTimings" class="card-detail">-</p>
+      <p id="diagError" class="card-detail">-</p>
+    </section>
+    <div class="button-group">
+      <button id="exportDiagBtn" class="secondary">导出脱敏诊断信息</button>
+      <button id="copyDiagBtn" class="secondary" hidden>复制诊断文本</button>
+    </div>
+    <textarea id="diagOutput" class="diag-output" rows="8" readonly hidden></textarea>
+  </div>
+
+  <p class="tip footer-tip">扩展不会自动点击 X 的回复/发布按钮，也不会上传或保存推文正文、图片和 AI 回答。浏览增速首次按"当前浏览量 ÷ 发布后经过时间"估算，快照间隔达到阈值后显示近次增速。</p>
+
+  <script src="shared/xg_shared.js"></script>
+  <script src="shared/xg_parse.js"></script>
+  <script src="shared/xg_settings.js"></script>
+  <script src="shared/xg_growth.js"></script>
+  <script src="shared/xg_diagnostics.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Local agent and canvas workspaces
+.qoder/
+.canvases/
+canvases/
+
+# Generated verification output
+test.log
+
+# Local extension packages and signing material
+*.zip
+*.crx
+*.pem
+*.key
+
+# OS and editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

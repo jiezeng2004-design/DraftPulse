@@ -1,0 +1,110 @@
+{
+  "manifest_version": 3,
+  "name": "DraftPulse",
+  "version": "2.0",
+  "minimum_chrome_version": "102",
+  "description": "在 X 推文下方显示浏览增速与多模型回复工具栏，复用 Gemini、ChatGPT 或 DeepSeek 网页登录状态准备回复草稿；支持多图、语言和自定义风格，不自动发布。",
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://pbs.twimg.com/*",
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://chat.deepseek.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "DraftPulse · 多模型网页会话",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "shared/xg_shared.js",
+        "shared/xg_parse.js",
+        "shared/xg_timeout.js",
+        "shared/xg_images.js",
+        "shared/xg_growth.js",
+        "shared/xg_settings.js",
+        "shared/xg_response.js",
+        "shared/xg_editor.js",
+        "shared/xg_selectors.js",
+        "shared/xg_xdom.js",
+        "shared/xg_platforms.js",
+        "shared/xg_cooldown.js",
+        "shared/xg_thread.js",
+        "shared/xg_account_memory.js",
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "js": [
+        "shared/xg_shared.js",
+        "shared/xg_timeout.js",
+        "shared/xg_images.js",
+        "shared/xg_response.js",
+        "shared/xg_selectors.js",
+        "gemini_bridge.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "shared/xg_shared.js",
+        "shared/xg_timeout.js",
+        "shared/xg_images.js",
+        "shared/xg_response.js",
+        "shared/xg_selectors.js",
+        "chatgpt_bridge.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chat.deepseek.com/*"
+      ],
+      "js": [
+        "shared/xg_shared.js",
+        "shared/xg_timeout.js",
+        "shared/xg_response.js",
+        "shared/xg_selectors.js",
+        "deepseek_bridge.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

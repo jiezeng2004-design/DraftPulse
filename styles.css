@@ -1,0 +1,397 @@
+/* ── Design Tokens (sync with popup.css) ── */
+:root {
+  --xg-accent-blue: #1d9bf0;
+  --xg-accent-green: #00ba7c;
+  --xg-accent-red: #f4212e;
+  --xg-accent-yellow: #ffd400;
+  --xg-accent-purple: #8e44ec;
+  --xg-r-sm: 8px;
+  --xg-r-md: 12px;
+  --xg-r-pill: 999px;
+  --xg-ease-fast: 0.15s ease;
+  --xg-ease-normal: 0.2s ease;
+}
+
+.draftpulse-panel {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 8px 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 4px 0 6px !important;
+  padding: 8px 10px !important;
+  border: 1px solid rgba(29, 155, 240, 0.24) !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, rgba(29,155,240,0.06), rgba(142,68,236,0.04)) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 2 !important;
+  overflow: visible !important;
+  overflow-anchor: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  transition: border-color 0.2s ease !important;
+  contain: layout style paint !important;
+  animation: draftpulse-panel-in 0.25s ease-out !important;
+}
+
+.draftpulse-summary,
+.draftpulse-controls {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+.draftpulse-summary { flex: 1 1 290px !important; }
+.draftpulse-controls { flex: 0 1 auto !important; justify-content: flex-end !important; }
+
+.draftpulse-heat-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  padding: 3px 8px !important;
+  border-radius: 999px !important;
+  font: 700 11px/16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  white-space: nowrap !important;
+  cursor: help !important;
+  transition: background 0.3s ease !important;
+}
+
+.draftpulse-heat-badge.viral {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #f91880, #ff7a00) !important;
+  animation: draftpulse-pulse 2s ease-in-out infinite !important;
+}
+
+.draftpulse-heat-badge.fast {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #7c3aed, #1d9bf0) !important;
+  box-shadow: 0 0 8px rgba(124,58,237,0.35) !important;
+}
+
+.draftpulse-heat-badge.normal {
+  color: rgb(29, 155, 240) !important;
+  background: rgba(29, 155, 240, 0.16) !important;
+  border: 1px solid rgba(29,155,240,0.2) !important;
+}
+
+@keyframes draftpulse-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+@keyframes draftpulse-panel-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.draftpulse-metrics {
+  color: rgb(113, 118, 123) !important;
+  font: 500 11px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  white-space: normal !important;
+}
+
+.draftpulse-provider-select {
+  width: auto !important;
+  min-width: 132px !important;
+  height: 30px !important;
+  margin: 0 !important;
+  padding: 0 28px 0 10px !important;
+  border: 1px solid rgb(83, 100, 113) !important;
+  border-radius: 999px !important;
+  color: rgb(231, 233, 234) !important;
+  background-color: rgb(22, 24, 28) !important;
+  font: 600 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  cursor: pointer !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.draftpulse-provider-select:hover {
+  border-color: rgb(130, 150, 170) !important;
+}
+
+.draftpulse-reply-btn,
+.draftpulse-cancel-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+.draftpulse-reply-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #1d9bf0, #8e44ec) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15) !important;
+}
+
+.draftpulse-cancel-btn {
+  color: rgb(231, 233, 234) !important;
+  background: rgba(83, 100, 113, 0.35) !important;
+  border: 1px solid rgb(83, 100, 113) !important;
+}
+
+.draftpulse-reply-btn:hover {
+  filter: brightness(1.12) !important;
+  transform: scale(1.03) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 12px rgba(29,155,240,0.3) !important;
+}
+.draftpulse-cancel-btn:hover { filter: brightness(1.12) !important; transform: scale(1.03) !important; }
+.draftpulse-reply-btn:active,
+.draftpulse-cancel-btn:active { transform: scale(0.97) !important; }
+.draftpulse-reply-btn:disabled,
+.draftpulse-cancel-btn:disabled { cursor: wait !important; opacity: 0.65 !important; transform: none !important; filter: none !important; }
+.draftpulse-cancel-btn[hidden] { display: none !important; }
+
+.draftpulse-candidates {
+  flex: 1 1 100% !important;
+  margin-top: 2px !important;
+}
+
+.draftpulse-candidates[hidden] { display: none !important; }
+
+.draftpulse-candidate-select {
+  width: auto !important;
+  min-width: 120px !important;
+  height: 30px !important;
+  margin: 0 !important;
+  padding: 0 26px 0 10px !important;
+  border: 1px solid rgb(83, 100, 113) !important;
+  border-radius: 999px !important;
+  color: rgb(231, 233, 234) !important;
+  background-color: rgb(22, 24, 28) !important;
+  font: 600 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  cursor: pointer !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.draftpulse-candidate-select:hover {
+  border-color: rgb(130, 150, 170) !important;
+}
+
+.draftpulse-status {
+  flex: 1 1 100% !important;
+  margin-top: 2px !important;
+  padding: 5px 8px 5px 12px !important;
+  border-radius: 10px !important;
+  font: 500 11px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  word-break: break-word !important;
+  border-left: 3px solid transparent !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+.draftpulse-status[hidden] { display: none !important; }
+.draftpulse-status.info { color: rgb(29, 155, 240) !important; background: rgba(29, 155, 240, 0.12) !important; border-left-color: rgb(29, 155, 240) !important; }
+.draftpulse-status.success { color: rgb(0, 186, 124) !important; background: rgba(0, 186, 124, 0.12) !important; border-left-color: rgb(0, 186, 124) !important; }
+.draftpulse-status.error { color: rgb(244, 33, 46) !important; background: rgba(244, 33, 46, 0.12) !important; border-left-color: rgb(244, 33, 46) !important; }
+.draftpulse-status.warn { color: rgb(255, 212, 0) !important; background: rgba(255, 212, 0, 0.12) !important; border-left-color: rgb(255, 212, 0) !important; }
+
+.draftpulse-toast {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  max-width: min(420px, calc(100vw - 40px)) !important;
+  padding: 12px 15px !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.28) !important;
+  color: #ffffff !important;
+  background: rgba(15, 20, 25, 0.96) !important;
+  font: 500 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  animation: draftpulse-toast-in 0.3s ease-out !important;
+}
+
+.draftpulse-toast.success { border-color: rgba(0, 186, 124, 0.7) !important; }
+.draftpulse-toast.error { border-color: rgba(244, 33, 46, 0.75) !important; }
+.draftpulse-toast[hidden] { display: none !important; }
+
+.draftpulse-toast::before {
+  display: inline-block !important;
+  margin-right: 8px !important;
+  font-size: 14px !important;
+  vertical-align: middle !important;
+}
+.draftpulse-toast.success::before { content: '✓' !important; color: #00ba7c !important; }
+.draftpulse-toast.error::before { content: '✕' !important; color: #f4212e !important; }
+.draftpulse-toast.info::before { content: 'ℹ' !important; color: #1d9bf0 !important; }
+.draftpulse-toast.warn::before { content: '⚠' !important; color: #ffd400 !important; }
+
+.draftpulse-toast-fadeout {
+  animation: draftpulse-toast-out 0.3s ease-in forwards !important;
+}
+
+@keyframes draftpulse-toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draftpulse-toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(12px); }
+}
+
+/* ── Draft Panel ── */
+.draftpulse-draft-panel {
+  flex: 1 1 100% !important;
+  margin-top: 6px !important;
+  padding: 10px !important;
+  border: 1px solid rgba(29, 155, 240, 0.3) !important;
+  border-radius: 12px !important;
+  background: rgba(22, 24, 28, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-sizing: border-box !important;
+  contain: layout style paint !important;
+  animation: draftpulse-panel-in 0.2s ease-out !important;
+}
+
+.draftpulse-draft-panel[hidden] { display: none !important; }
+
+.draftpulse-candidate-card {
+  margin-bottom: 8px !important;
+  padding: 8px 10px !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.04) !important;
+}
+
+.draftpulse-candidate-card:last-child { margin-bottom: 0 !important; }
+
+.draftpulse-candidate-label {
+  display: inline-block !important;
+  margin-bottom: 4px !important;
+  padding: 2px 8px !important;
+  border-radius: 999px !important;
+  font: 600 10px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  color: #1d9bf0 !important;
+  background: rgba(29, 155, 240, 0.15) !important;
+}
+
+.draftpulse-candidate-textarea {
+  display: block !important;
+  width: 100% !important;
+  min-height: 60px !important;
+  margin: 4px 0 !important;
+  padding: 8px !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 8px !important;
+  color: rgb(231, 233, 234) !important;
+  background: rgba(0,0,0,0.3) !important;
+  font: 400 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
+
+.draftpulse-candidate-textarea:focus {
+  outline: none !important;
+  border-color: #1d9bf0 !important;
+}
+
+.draftpulse-candidate-actions {
+  display: flex !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  margin-top: 4px !important;
+}
+
+.draftpulse-draft-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 26px !important;
+  padding: 0 10px !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-radius: 999px !important;
+  font: 600 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  cursor: pointer !important;
+  transition: filter 0.15s ease, background 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.draftpulse-draft-btn.fill-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #1d9bf0, #8e44ec) !important;
+  border: none !important;
+}
+
+.draftpulse-draft-btn.copy-btn {
+  color: rgb(231, 233, 234) !important;
+  background: rgba(83, 100, 113, 0.3) !important;
+}
+
+.draftpulse-draft-btn:hover { filter: brightness(1.15) !important; }
+.draftpulse-draft-btn:active { transform: scale(0.97) !important; }
+
+@media (max-width: 620px) {
+  .draftpulse-controls { width: 100% !important; justify-content: flex-start !important; }
+  .draftpulse-provider-select { flex: 1 1 140px !important; }
+  .draftpulse-reply-btn { flex: 1 1 140px !important; }
+}
+
+@media (prefers-color-scheme: light) {
+  .draftpulse-panel {
+    border-color: rgba(29, 155, 240, 0.35) !important;
+    background: linear-gradient(135deg, rgba(29,155,240,0.08), rgba(142,68,236,0.05)) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+  .draftpulse-metrics { color: rgb(83, 100, 113) !important; }
+  .draftpulse-provider-select {
+    color: rgb(15, 20, 25) !important;
+    background-color: #ffffff !important;
+    border-color: rgb(207, 217, 222) !important;
+  }
+  .draftpulse-candidate-select {
+    color: rgb(15, 20, 25) !important;
+    background-color: #ffffff !important;
+    border-color: rgb(207, 217, 222) !important;
+  }
+  .draftpulse-cancel-btn {
+    color: rgb(15, 20, 25) !important;
+    background: rgba(15, 20, 25, 0.06) !important;
+    border-color: rgb(207, 217, 222) !important;
+  }
+  .draftpulse-status.info { color: rgb(29, 155, 240) !important; background: rgba(29, 155, 240, 0.10) !important; }
+  .draftpulse-status.success { color: rgb(0, 150, 100) !important; background: rgba(0, 150, 100, 0.10) !important; }
+  .draftpulse-status.error { color: rgb(220, 30, 42) !important; background: rgba(220, 30, 42, 0.10) !important; }
+  .draftpulse-status.warn { color: rgb(146, 108, 0) !important; background: rgba(255, 180, 0, 0.14) !important; }
+  .draftpulse-toast {
+    color: rgb(15, 20, 25) !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    border-color: rgba(15, 20, 25, 0.18) !important;
+  }
+  .draftpulse-draft-panel {
+    background: rgba(255, 255, 255, 0.97) !important;
+    border-color: rgba(29, 155, 240, 0.35) !important;
+  }
+  .draftpulse-candidate-card {
+    background: rgba(0,0,0,0.02) !important;
+    border-color: rgba(0,0,0,0.1) !important;
+  }
+  .draftpulse-candidate-textarea {
+    color: rgb(15, 20, 25) !important;
+    background: rgba(255,255,255,0.9) !important;
+    border-color: rgba(0,0,0,0.15) !important;
+  }
+  .draftpulse-draft-btn.copy-btn {
+    color: rgb(15, 20, 25) !important;
+    background: rgba(0,0,0,0.05) !important;
+    border-color: rgba(0,0,0,0.12) !important;
+  }
+}
