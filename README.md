@@ -1,5 +1,7 @@
 # DraftPulse — AI-Assisted Reply Drafting & Engagement Insights
 
+[简体中文](README.md) | [English](README_EN.md)
+
 **AI analyzes → AI drafts → Human decides → Human posts**
 
 DraftPulse 是一款 Chrome 扩展，复用浏览器中已登录的 Gemini、ChatGPT 或 DeepSeek 网页会话，为 X/Twitter 推文生成回复草稿并提供浏览增速洞察。
